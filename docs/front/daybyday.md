@@ -4,7 +4,7 @@
  * @Autor: yin gang
  * @Date: 2020-09-28 16:37:42
  * @LastEditors: yin gang
- * @LastEditTime: 2020-10-13 11:59:27
+ * @LastEditTime: 2020-10-13 16:54:36
 -->
 * split一个需要注意的小地方    
 > 空字符串""在调用split分隔符为非""的情况下返回的是一个[""], 这是一个有值的数组，和预期的结果[]是不一样的，需要做一下容错处理
@@ -25,3 +25,5 @@
 * try catch的时候，如果在catch里面又throw了错误, 比如 throw new TypeError('is not a variable'), 还是会中断后续程序运行的。所以为了不中断，catch里面就不要再抛出错误了。
 
 * 安全的判断一个变量是否已定义用 typeof
+
+* 
