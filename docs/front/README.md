@@ -4,7 +4,7 @@
  * @Autor: yin gang
  * @Date: 2020-09-23 14:07:12
  * @LastEditors: yin gang
- * @LastEditTime: 2020-11-01 16:15:34
+ * @LastEditTime: 2020-11-07 14:58:26
 -->
 ### [daybyday](./daybyday.md)
 ### [docker学习](./docker.md)
@@ -12,3 +12,4 @@
 ### [vant tabs组件在切换时无法保存tab的具体滚动未知](./tab.md)
 ### [图文页面中图片的占位问题](./pic.md)
 ### [Vue相关问题](./vue.md)
+### [其他前端相关问题](./other-front.md)
