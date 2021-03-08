@@ -13,15 +13,17 @@
         $children $parent $root $refs 
         $on $once $off $emit $forceUpdate $destroy 
         $slots $scopedSlots $createElement $nextTick
-        做业务的时候很少在这个钩子里面写代码，一些vue的扩展插件比如vux vue-router 一般会在beforeCreated钩子里面进行插件的初始话.
+        做业务的时候很少在这个钩子里面写代码，一些vue的扩展插件比如vux vue-router 一般会在beforeCreated钩子里面进行插件的初始化.
   * created 
       数据初始化 包含data\props\methods\watch\computed\provide\inject 建立监听关系
   * beforeMount
       将模板编译成渲染函数
   * mounted
-      dom挂载完成
+      虚拟dom已经转换为真实dom
   * beforeUpdate
   * updated
+  * deactivated
+  * activated
   * beforeDestroy
   * destroyed
   * errorCaptured
