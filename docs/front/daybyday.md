@@ -44,6 +44,46 @@
 
 * event对象的相关属性着重记忆一下
   event.clientX  事件发生点离浏览器视口的距离
-  event.offsetX  事件发生点离其最近的有定位属性的父元素的距离
+  event.offsetX  事件发生点离其最近的有定位属性的父元素的距离, 也有可能是元素自身(比如drop事件，可能拖拽的距离很短，拖拽还是落在了元素自己身上，其次才会冒泡到外层的容器)
   event.pageX    事件发生点离文档左上角的距离，因为文档过长存在滚动关系，所以pageX一般是大于等于clientX的
+## 关于跨域的身份认证识别
+> 在ｗebpack中通过devServer的proxy的代理设置，将接口代理规避跨域但是针对有些后台接口需要认证信息才能返回数据;依稀记得之前的解决方案是在axios里面发起请求前添加请求头
+{Cookie: 'JESSIONID=12324556'}这种；但是昨天试了一下居然不行了，浏览器会报Refused to set unsafe header Cookie,错误，然后身份信息怎么也带不过去，后来兵哥给了另外一种方
+案,如下在devServer代理里面添加Cookie，实现了身份认证，就狠神奇 
+
+    module.exports = {
+      proxy: {
+          '/seeyon': {
+              target: proxySite,
+              changeOrigin: true,
+              pathRewrite: {
+                  '^/seeyon': '/seeyon'
+              },
+              headers: {
+                  Cookie: 'JSESSIONID=BD1394C2A5D6CB8242E3DC852771AAD9'
+              }
+          }
+      },
+      port: 8000
+  }    
+
+  * npm安装依赖的时候， 有些项目依赖分为外部依赖和内部依赖，针对这种需要切换npm源的情况，解决方案暂时了解的有如下几种
+    1. 通过npm config set registry xxxxx 手动切换源来进行安装；缺点就是比较麻烦
+    2. 通过在scripts里配置安装命令:upb: npm --registry http://192.168.225.99:4837/ uninstall cap4-business -S && npm --registry http://192.168.225.99:4837/ install cap4-business -S这种临时设置源的方法不会对默认源进行修改，安装的时候直接 npm run upb 就可以安装了，比刚刚说的要方便一些，但是要完整安装完依赖还是需要 npm i; npm run upb ; npm run seeyon-ant 这样子执行几次命令的
+    3. 通过配置.nrmrc 文件
+
+*  动态插入到head中js的执行顺序
+      ```javascript
+    var script = document.createElement('script');
+    script.src = 'xxxx'
+    document.getElementsByTagName('head')[0].appendChild(script);
+      ```
+    类似于上诉的动态插入的脚本，在执行上有几个地方要注意一下。    
+    1. 插入的js默认是async = true，谁先下载完谁执行, 所以js的执行顺序并不能保证和插入顺序一致，如果要保证执行顺序和插入顺序一致，那么设置script.async = false, 可以保证动态插入的脚本按插入顺序执行
+    2. 动态插入的脚本不会阻塞浏览器渲染和后面的脚本执行，所以后面的脚本执行的时候，动态插入的脚本有可能执行完了有可能没执行完；如果后续的脚本依赖了动态插入的脚本的执行结果，极有可能会出错
+
+
+
+
+
   
