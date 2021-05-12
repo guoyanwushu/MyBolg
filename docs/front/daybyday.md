@@ -70,7 +70,13 @@
   * npm安装依赖的时候， 有些项目依赖分为外部依赖和内部依赖，针对这种需要切换npm源的情况，解决方案暂时了解的有如下几种
     1. 通过npm config set registry xxxxx 手动切换源来进行安装；缺点就是比较麻烦
     2. 通过在scripts里配置安装命令:upb: npm --registry http://192.168.225.99:4837/ uninstall cap4-business -S && npm --registry http://192.168.225.99:4837/ install cap4-business -S这种临时设置源的方法不会对默认源进行修改，安装的时候直接 npm run upb 就可以安装了，比刚刚说的要方便一些，但是要完整安装完依赖还是需要 npm i; npm run upb ; npm run seeyon-ant 这样子执行几次命令的
-    3. 通过配置.nrmrc 文件
+    3. 通过配置.nrmrc 文件, 在npmrc中配置一些依赖库的下载路径，避免因为网络问题出现某些依赖下载失败(node-sass说的就是你)还是很有用的
+        ```javascript
+        registry=https://registry.npm.taobao.org/
+        sass_binary_site=https://npm.taobao.org/mirrors/node-sass/
+        electron_mirror=https://npm.taobao.org/mirrors/electron/
+        phantomjs_cdnurl=https://npm.taobao.org/mirrors/phantomjs/
+        ```
 
 *  动态插入到head中js的执行顺序
       ```javascript
@@ -80,7 +86,20 @@
       ```
     类似于上诉的动态插入的脚本，在执行上有几个地方要注意一下。    
     1. 插入的js默认是async = true，谁先下载完谁执行, 所以js的执行顺序并不能保证和插入顺序一致，如果要保证执行顺序和插入顺序一致，那么设置script.async = false, 可以保证动态插入的脚本按插入顺序执行
-    2. 动态插入的脚本不会阻塞浏览器渲染和后面的脚本执行，所以后面的脚本执行的时候，动态插入的脚本有可能执行完了有可能没执行完；如果后续的脚本依赖了动态插入的脚本的执行结果，极有可能会出错
+    2. 动态插入的脚本不会阻塞浏览器渲染和后面的脚本执行，所以后面的脚本执行的时候，动态插入的脚本有可能执行完了有可能没执行完；如果后续的脚本依赖了动态插入的脚本的执行结果，极有可能会出错    
+
+    解决方案：
+    有没有觉得和amd模块方案是不是有点类似? require(['a.js', 'b.js', 'c.js'], function(a,b,c) {}); 不同的是我们的需求更为简单，只需要同步执行就行了
+
+
+* script内部报错的问题    
+也是比较有意思的问题。html中的一段script代码,前面声明了一些变量，然后有个语法错误，然后会导致整段script执行失败，并且在出错代码之前声明的变量也会没了。    
+
+* 关于babel转换语法的问题，在vue-cli3默认情况下，src下面的业务代码都是转了的，但是node_modules里面的三方库文件，不一定是转了的，所以就会造成有些诸如const、let之类的变量在ie下面直接就语法错误了，这个时候就需要把需要的三方库也用babel转一哈    
+在vue.config.js的导出对象中加一行
+  ``` javascript
+    transpileDependencies: ['./src', /[/\\]node_modules[/\\]seeyon-ui-ant[/\\]/],
+  ```
 
 
 
