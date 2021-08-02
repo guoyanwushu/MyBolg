@@ -101,6 +101,23 @@
     transpileDependencies: ['./src', /[/\\]node_modules[/\\]seeyon-ui-ant[/\\]/],
   ```
 
+* ie的字体图标问题
+任信的问题，字体图标在chrome下面显示正常，但是在ie下面始终无法显示。后经过排查是加载的字体文件的问题，ie加载的是eot格式的字体图标(eot是ie的专用字体格式，其他浏览器不支持eot)，恰好大研发那边没有再维护eot字体文件了，所以没有那两个图标，所以导致在ie里面始终无法加载出对应的字体图标。由于ie9已经支持woff格式的字体图标了，所以如果没有ie9以下的支持需求的话，干脆把css里面的eot引用删了。
+
+* 离开浏览器时的执行操作
+```javascript
+ window.onbeforeunload = function (e) {
+    e = e || window.event;
+    // 兼容IE8和Firefox 4之前的版本
+    if (e) {
+        e.returnValue = '关闭提示';
+    }
+    // Chrome, Safari, Firefox 4+, Opera 12+ , IE 9+
+    return '关闭提示';
+ };
+```
+注意, 通过文件路径直接访问并关闭页面亲测是不会触发的，只有通过http打开 localhost 或者 ip，才会触发
+
 
 
 
